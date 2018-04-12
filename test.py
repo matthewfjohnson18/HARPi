@@ -16,10 +16,8 @@ from child_mqtt import child_mqtt
 
 NAME = "Test publisher"
 TOPIC = "test/topic"
-#MY_IP = "<ENTER_YOUR_IP_ADDRESS>"
-#BROKER_IP = "<ENTER_BROKER_IP_ADDRESS>"
-MY_IP = "192.168.1.187"
-BROKER_IP = "192.168.1.176"
+MY_IP = "<ENTER_YOUR_IP_ADDRESS>"
+BROKER_IP = "<ENTER_BROKER_IP_ADDRESS>"
 DESC = "A test description"
 
 # You don't need to change this
