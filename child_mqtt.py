@@ -20,6 +20,12 @@ import paho.mqtt.client as mqtt
 # Socket package for IP address
 import socket
 
+# Splitting token
+import shlex
+
+# Pinging
+import subprocess
+
 class child_mqtt:
     def __init__(self, name, topic, broker_ip, desc):
         # Grab IP address
@@ -64,3 +70,12 @@ class child_mqtt:
 
     def get_broker_ip(self):
         return self.BROKER
+
+    def check_connection(self):
+        conn = shlex.split("ping -c1 %s" %self.IP)
+        try:
+            output = subprocess.check_output(conn)
+        except subprocess.CalledProcessError, e:
+            print("ERROR: not able to connect to %s" %self.IP)
+        else:
+            print("Connected to: %s" %self.IP)
