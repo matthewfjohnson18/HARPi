@@ -17,10 +17,13 @@ from child_mqtt import child_mqtt
 NAME = "Test publisher"
 TOPIC = "test/publisher"
 BROKER_IP = "<ENTER_BROKER_IP_ADDRESS>"
+
+# Tokens can be found in child_mqtt.py
+TOKEN = "<ENTER_TOKEN>"
 DESC = "A test description"
 
 # You don't need to change this
-child = child_mqtt(NAME, TOPIC, BROKER_IP, DESC)
+child = child_mqtt(NAME, TOPIC, BROKER_IP, TOKEN, DESC)
 
 print("My name is: %s" %child.get_name())
 print("My topic is: %s" %child.get_topic())
