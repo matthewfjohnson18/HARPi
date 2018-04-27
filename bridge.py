@@ -36,7 +36,7 @@ from pprint import pprint
 class Bridge:
     def __init__(self):
         # Getting IP address
-        sock = sock.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.connect(("8.8.8.8", 80))
 
         # Initialize MQTT
@@ -60,14 +60,14 @@ class Bridge:
         self.MQTTC.on_message = self.message
 
     # Subscribe to a topic
-    def connect(self, mosq, obj, rc):
+    def connect(self, mosq, obj, flag, rc):
         self.MQTTC.subscribe(self.TOPIC, 0)
 
     # Print out incoming messages
     def message(self, mosq, obj, msg):
-        print("%s : %s" %(msg.topic.split("HARPi/")[1], msg.payload)
         topic = msg.topic.split("HARPi/")[1]
         data = msg.payload
+        print("%s : %s" %(topic, data))
 
         if topic[:8] == "set_node":
             self.set_node(topic[9:], data)
@@ -89,6 +89,10 @@ class Bridge:
     def new_node(self):
         return self.NEW_NODE
 
+    # Run MQTT loop
+    def mqtt_loop(self):
+        self.MQTTC.loop()
+
     # Check connection with children
     def check_connection(self):
         for i in range(0, len(self.NODE_LIST)):
@@ -102,7 +106,7 @@ class Bridge:
             else:
                 print("Connected: %s" %ip)
 
-if __name__=="_main__":
+if __name__=="__main__":
     bd = Bridge()
     my_list = []
     while True:
