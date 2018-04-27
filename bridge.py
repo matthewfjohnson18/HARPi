@@ -30,6 +30,9 @@ import shlex
 # Pinging
 import subprocess
 
+# Print Pretty
+from pprint import pprint
+
 class Bridge:
     def __init__(self):
         # Getting IP address
@@ -45,7 +48,7 @@ class Bridge:
         self.TOPIC = "HARPi/#"
 
         # Global Variables
-        self.NODE_LIST = {}
+        self.NODE_LIST = []
         self.NODE_DICT = {"complete" : 0}
         self.NEW_NODE = False
 
@@ -72,15 +75,19 @@ class Bridge:
     # Store new node values in dictionary
     def set_node(self, key, value):
         self.NODE_DICT[key] = value
-        if self.NODE_DICT["complete"] == 1:
+        if self.NODE_DICT["complete"] == "1":
             self.NEW_NODE = True
-            self.NODE_LIST.append(self.NODE_DICT.copy)
+            self.NODE_LIST.append(self.NODE_DICT)
 
     # Return dictionary with new child values
     def get_node(self):
         self.NODE_DICT["complete"] = 0
         self.NEW_NODE = False
         return self.NODE_LIST
+
+    # Check if new node is ready
+    def new_node(self):
+        return self.NEW_NODE
 
     # Check connection with children
     def check_connection(self):
@@ -94,3 +101,12 @@ class Bridge:
                 print("Error: not able to connnect to %s" %ip)
             else:
                 print("Connected: %s" %ip)
+
+if __name__=="_main__":
+    bd = Bridge()
+    my_list = []
+    while True:
+        bd.mqtt_loop()
+        if bd.new_node():
+            my_list = bd.get_node()
+            pprint(my_list)
