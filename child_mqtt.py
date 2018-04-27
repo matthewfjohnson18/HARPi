@@ -20,14 +20,12 @@ import paho.mqtt.client as mqtt
 # Socket package for IP address
 import socket
 
-# Splitting token
-import shlex
-
-# Pinging
-import subprocess
+# Token
+#===============================================
+TOKENS = {"TEMP" : "Temperature is", "LIGHT" : "Light is", "UV" : "UV index is", "PIR" : "IR level is"}
 
 class child_mqtt:
-    def __init__(self, name, topic, broker_ip, desc):
+    def __init__(self, name, topic, broker_ip, token, desc):
         # Grab IP address
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.connect(("8.8.8.8", 80))
@@ -42,12 +40,26 @@ class child_mqtt:
         self.TOPIC = str(topic)
         self.DESC = str(desc)
 
+        # Find the token
+        for key, value in TOKENS.iteritems():
+            if key == token:
+                self.TOKEN = value
+
         # Setting up MQTT to a client and connecting
         self.MQTTC = mqtt.Client()
         self.MQTTC.connect(self.BROKER, self.PORT, self.ALIVE)
 
         # Event handler for every publish
         self.MQTTC.on_publish = self.publish
+
+        # Bridge child node to parent node
+        bridge = { "name" : self.NAME, "ip" : self.IP, "topic" : self. TOPIC, "token" : self.TOKEN, "desc" : self.DESC}
+        for key, value in bridge.iteritems():
+            tp = "HARPi/set_node" + key
+            self.MQTTC.publish(tp, value)
+            sleep(0.5)
+        tp = "HARPi/set_node/complete"
+        self.MQTTC.publish(tp, 1)
 
     def publish(self, client, userdata, msg):
         return
@@ -70,12 +82,3 @@ class child_mqtt:
 
     def get_broker_ip(self):
         return self.BROKER
-
-    def check_connection(self):
-        conn = shlex.split("ping -c1 %s" %self.IP)
-        try:
-            output = subprocess.check_output(conn)
-        except subprocess.CalledProcessError, e:
-            print("ERROR: not able to connect to %s" %self.IP)
-        else:
-            print("Connected to: %s" %self.IP)
