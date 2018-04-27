@@ -20,6 +20,9 @@ import paho.mqtt.client as mqtt
 # Socket package for IP address
 import socket
 
+# Time
+from time import sleep
+
 # Token
 #===============================================
 TOKENS = {"TEMP" : "Temperature is", "LIGHT" : "Light is", "UV" : "UV index is", "PIR" : "IR level is"}
@@ -36,6 +39,7 @@ class child_mqtt:
         self.BROKER = str(broker_ip)
         self.PORT = 1883
         self.ALIVE = 60
+        self.MQTTC = mqtt.Client()
         self.NAME = str(name)
         self.TOPIC = str(topic)
         self.DESC = str(desc)
@@ -45,12 +49,12 @@ class child_mqtt:
             if key == token:
                 self.TOKEN = value
 
-        # Setting up MQTT to a client and connecting
-        self.MQTTC = mqtt.Client()
-        self.MQTTC.connect(self.BROKER, self.PORT, self.ALIVE)
-
-        # Event handler for every publish
+        # Create event handlers for MQTT
+        self.MQTTC.on_connect = self.connect
         self.MQTTC.on_publish = self.publish
+
+        # Setting up MQTT to a client and connecting
+        self.MQTTC.connect(self.BROKER, self.PORT, self.ALIVE)
 
         # Bridge child node to parent node
         bridge = { "name" : self.NAME, "ip" : self.IP, "topic" : self. TOPIC, "token" : self.TOKEN, "desc" : self.DESC}
@@ -61,11 +65,17 @@ class child_mqtt:
         tp = "HARPi/set_node/complete"
         self.MQTTC.publish(tp, 1)
 
+    # Subscribe to a topic
+    def connect(self, mosq, obj, flag, rc):
+        self.MQTTC.subscribe(self.TOPIC, 0)
+
     def publish(self, client, userdata, msg):
         return
 
+    # Message event handler
     def send_msg(self, msg):
-        self.MQTTC.publish(self.TOPIC, msg)
+        tp = "HARPi/" + self.TOPIC
+        self.MQTTC.publish(tp, msg)
         print("MSG sent: %s" %msg)
 
     def disconnect(self):
