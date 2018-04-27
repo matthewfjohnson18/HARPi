@@ -59,7 +59,7 @@ class child_mqtt:
         # Bridge child node to parent node
         bridge = { "name" : self.NAME, "ip" : self.IP, "topic" : self. TOPIC, "token" : self.TOKEN, "desc" : self.DESC}
         for key, value in bridge.iteritems():
-            tp = "HARPi/set_node" + key
+            tp = "HARPi/set_node/" + key
             self.MQTTC.publish(tp, value)
             sleep(0.5)
         tp = "HARPi/set_node/complete"
