@@ -23,9 +23,12 @@ import socket
 # Time
 from time import sleep
 
+# global_var.py
+from global_var import Global_Var
+
 # Token
 #===============================================
-TOKENS = {"TEMP" : "Temperature is", "LIGHT" : "Light is", "UV" : "UV index is", "PIR" : "IR level is"}
+TOKENS = {"TEMP" : "Temperature is ", "LIGHT" : "Light is ", "UV" : "UV index is ", "PIR" : "IR level is "}
 
 class child_mqtt:
     def __init__(self, name, topic, broker_ip, token, desc):
@@ -34,6 +37,9 @@ class child_mqtt:
         sock.connect(("8.8.8.8", 80))
         self.IP = sock.getsockname()[0]
         sock.close()
+
+        # Create object of global_variables
+        self.gv = Global_Var()
 
         # Initialize variable
         self.BROKER = str(broker_ip)
@@ -57,12 +63,12 @@ class child_mqtt:
         self.MQTTC.connect(self.BROKER, self.PORT, self.ALIVE)
 
         # Bridge child node to parent node
-        bridge = { "name" : self.NAME, "ip" : self.IP, "topic" : self. TOPIC, "token" : self.TOKEN, "desc" : self.DESC}
+        bridge = { self.gv.get_name() : self.NAME, self.gv.get_ip() : self.IP, self.gv.get_topic() : self.TOPIC, self.gv.get_token() : self.TOKEN, self.gv.get_desc() : self.DESC}
         for key, value in bridge.iteritems():
-            tp = "HARPi/set_node/" + key
+            tp = "HARPi/" + self.gv.get_set_node() + "/" + key
             self.MQTTC.publish(tp, value)
             sleep(0.5)
-        tp = "HARPi/set_node/complete"
+        tp = "HARPi/" + self.gv.get_set_node() + "/" + self.gv.get_complete()
         self.MQTTC.publish(tp, 1)
 
     # Subscribe to a topic
@@ -77,6 +83,13 @@ class child_mqtt:
         tp = "HARPi/" + self.TOPIC
         self.MQTTC.publish(tp, msg)
         print("MSG sent: %s" %msg)
+
+    # Status event handler
+    def status_msg(self, msg):
+        tp = "HARPi/" + self.gv.get_status() + "/" + self.TOPIC
+        st = self.TOKEN + msg
+        self.MQTTC.publish(tp, st)
+        print("Status : %s" %(st))
 
     def disconnect(self):
         self.MQTTC.disconnect()
