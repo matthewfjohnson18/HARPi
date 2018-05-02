@@ -49,6 +49,29 @@ user_input = ""
 cur_UVI = 0
 cur_PIR = 1111
 
+# Importing child_mqtt package
+from child_mqtt import child_mqtt
+from time import sleep
+
+NAME = "Matts_Node"
+TOPIC1 = "Matt/Temperature"
+TOPIC2 = "Matt/UVSensor"
+TOPIC3 = "Matt/PIRReading"
+BROKER_IP = "harpio.duckdns.org"
+
+# Tokens can be found in child_mqtt.py
+TOKEN1 = "TEMP"
+TOKEN2 = "UV"
+TOKEN3 = "PIR"
+DESC1 = "The current temperature."
+DESC2 = "The current UV index."
+DESC3 = "Motion detector."
+
+# I did change this to include multiple instances
+child1 = child_mqtt(NAME, TOPIC1, BROKER_IP, TOKEN1, DESC1) 
+child2 = child_mqtt(NAME, TOPIC2, BROKER_IP, TOKEN2, DESC2) 
+child3 = child_mqtt(NAME, TOPIC3, BROKER_IP, TOKEN3, DESC3) 
+
 GPIO.setwarnings(False)
 GPIO.setup(IN1, GPIO.OUT)
 GPIO.setup(IN2, GPIO.OUT)
@@ -97,7 +120,7 @@ while True:
         cur_temp = values[0]
         print("The current temperature is: " + str(cur_temp) + " deg C")
 
-	if values[1] != cur_UVI :
+    if values[1] != cur_UVI :
         cur_UVI = values[1]
         #print("The current UV index is: " + str(cur_UVI))
 		
