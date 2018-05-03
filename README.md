@@ -17,4 +17,12 @@ Initialize _child_mqtt()_ to a object with a given name, topic, token, and descr
 Python class that connects the children to the parent. This program runs in the background of _child_mqtt.py_, once a new object of  _child_mqtt.py_ is created, it will be sent to _bridge.py_ where it will add the new node in. _bridge.py_ is the middle program between the children and the parent, where the children talk to and only to the parent. As of this very moment, the children cannot talk to each other
 
 # MattsHARPi:
-Python script to run various sensors through an ADC breakout board from Adafruit. Must import the ADC's library from Adafruit before use.
+Python script to run various sensors through an ADC breakout board from Adafruit. Must import the ADC's library from Adafruit before use. Also must install MQTT child information and scripts from Loerac. To run the program from a terminal go to..
+```
+$ ~/Documents/HARPi/
+```
+And run the following script to activate the sensor node...
+```
+$ python3 MattsHARPi.py
+```
+The screen should start reading output in sentence format and show that STATUS updates are being sent.
