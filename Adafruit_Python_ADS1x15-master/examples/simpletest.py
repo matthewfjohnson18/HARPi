@@ -9,10 +9,10 @@ import Adafruit_ADS1x15
 
 
 # Create an ADS1115 ADC (16-bit) instance.
-adc = Adafruit_ADS1x15.ADS1115()
+# adc = Adafruit_ADS1x15.ADS1115()
 
 # Or create an ADS1015 ADC (12-bit) instance.
-#adc = Adafruit_ADS1x15.ADS1015()
+adc = Adafruit_ADS1x15.ADS1015()
 
 # Note you can change the I2C address from its default (0x48), and/or the I2C
 # bus by passing in these optional parameters:
@@ -31,8 +31,8 @@ GAIN = 1
 
 print('Reading ADS1x15 values, press Ctrl-C to quit...')
 # Print nice channel column headers.
-print('| {0:>6} | {1:>6} | {2:>6} | {3:>6} |'.format(*range(4)))
-print('-' * 37)
+#print('| {0:>6} | {1:>6} | {2:>6} | {3:>6} |'.format(*range(4)))
+#print('-' * 37)
 # Main loop.
 while True:
     # Read all the ADC channel values in a list.
@@ -50,4 +50,4 @@ while True:
     # Print the ADC values.
     print('| {0:>6} | {1:>6} | {2:>6} | {3:>6} |'.format(*values))
     # Pause for half a second.
-    time.sleep(0.5)
+    time.sleep(5)

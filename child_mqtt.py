@@ -51,7 +51,7 @@ class child_mqtt:
         self.DESC = str(desc)
 
         # Find the token
-        for key, value in TOKENS.iteritems():
+        for key, value in TOKENS.items():
             if key == token:
                 self.TOKEN = value
 
@@ -64,7 +64,7 @@ class child_mqtt:
 
         # Bridge child node to parent node
         bridge = { self.gv.get_name() : self.NAME, self.gv.get_ip() : self.IP, self.gv.get_topic() : self.TOPIC, self.gv.get_token() : self.TOKEN, self.gv.get_desc() : self.DESC}
-        for key, value in bridge.iteritems():
+        for key, value in bridge.items():
             tp = "HARPi/" + self.gv.get_set_node() + "/" + key
             self.MQTTC.publish(tp, value)
             sleep(0.5)
