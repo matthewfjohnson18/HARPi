@@ -26,3 +26,5 @@ And run the following script to activate the sensor node...
 $ python3 MattsHARPi.py
 ```
 The screen should start reading output in sentence format and show that STATUS updates are being sent.
+
+Adding this line as a test. -MJ
